@@ -5,6 +5,7 @@ from app.models import User, Post
 
 @app.route('/')
 @app.route('/index')
+@login_requred
 def index():
     user = {'username':'Peefer'}
     posts = [
@@ -32,7 +33,10 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('index'))
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != "":
+            next_page = url_for('index')
+        return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout')
