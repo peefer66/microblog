@@ -1,11 +1,14 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from app import app
 from app.forms import LoginForm
 from app.models import User, Post
+from flask_login import login_user, logout_user, login_required
+from werkzeug.urls import url_parse
+
 
 @app.route('/')
 @app.route('/index')
-@login_requred
+@login_required
 def index():
     user = {'username':'Peefer'}
     posts = [
@@ -41,4 +44,5 @@ def login():
 
 @app.route('/logout')
 def logout():
+    logout_user()
     return redirect(url_for('login'))
