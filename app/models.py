@@ -38,6 +38,11 @@ class Post(db.Model):
         return '<Post {}'.format(self.body)
 
 
-@login.user_loader
+'''
+ provide a user_loader callback. This callback is used to reload the user object
+ from the user ID stored in the session.
+ It should take the unicode ID of a user, and return the corresponding user object.
+'''
+@login.user_loader # Part of Flask-Login functionality
 def load_user(id):
     return User.query.get(int(id))
