@@ -6,6 +6,7 @@ from flask_login import LoginManager # https://flask-login.readthedocs.io/en/lat
 import logging
 from logging.handlers import SMTPHandler
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
