@@ -1,7 +1,7 @@
 from flask import render_template
 from app import app, db
 '''
-Flask has a build in custom error  handling
+Flask has a build in custom error  handling ...
 
 '''
 @app.errorhandler(404)
