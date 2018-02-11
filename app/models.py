@@ -44,7 +44,10 @@ class User(UserMixin, db.Model):
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
-
+    '''
+    Need to re-read the book associated with followers to get my head around
+    all of this!!!! pg 95 ish
+    '''
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
@@ -55,6 +58,16 @@ class User(UserMixin, db.Model):
 
     def is_following(self, user):
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+
+    def followed_post(self):
+        followed =  Post.query.join(
+            followers, (followers.c.followed_id == Post.user.id)).filter(
+                followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
+            
+        
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
