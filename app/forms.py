@@ -33,14 +33,14 @@ class EditProfileForm(FlaskForm):
     about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
     submit = SubmitField('Submit')
     '''
-    The RegistrationForm already implements validation for usrename. the requirements for the edit 
+    The RegistrationForm already implements validation for usrename. the requirements for the edit
     form are slightly different. During registration need to make sure that the name entered
     is not in the database The edit for you have to do the same but with one exception,
     If the user leaves the original name untouched then the validation should allow it
     since the username is already assigned to that user.
     The implementation is in a custom validation method, but there is a overload
     constructor that accepts the original username as an argument. The username is saved as an instance variable
-    and checked in the validate_username() method. If the username is the same as the original then there is no need to 
+    and checked in the validate_username() method. If the username is the same as the original then there is no need to
     vheck the database
     '''
     def __init__(self, original_username, *args, **kwargs):
@@ -53,3 +53,9 @@ class EditProfileForm(FlaskForm):
             if user is not None:
                 raise ValidationError('Please use a different username')
 
+# Users create a new post
+class PostForm(FlaskForm):
+    post = TextAreaField('Say something', validators=[
+        DataRequired(), Length(min=-1, max=140)])
+    submit= SubmitField('Submit')
+    
