@@ -6,6 +6,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from datetime import datetime
 
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
@@ -115,7 +116,7 @@ def follow(username):
 @login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
-    if user is None:
+    zif user is None:
         flash('User {} not found'.format(username))
         return redirect(url_for('index'))
     if user == current_user:
