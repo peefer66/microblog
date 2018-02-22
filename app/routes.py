@@ -21,7 +21,7 @@ def index():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(body=form.post.data, author=current_user)
-        db.session.add()
+        db.session.add(post)
         db.session.commit()
         flash('Your post is now live')
         return redirect(url_for('index'))
@@ -115,7 +115,7 @@ def follow(username):
 @login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
-    zif user is None:
+    if user is None:
         flash('User {} not found'.format(username))
         return redirect(url_for('index'))
     if user == current_user:
@@ -127,3 +127,8 @@ def unfollow(username):
     return redirect(url_for('user', username=username))
 
 
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title='Explore', posts=posts)
