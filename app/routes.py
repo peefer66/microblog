@@ -33,7 +33,14 @@ def index():
     page = request.args.get('page', 1,type=int)
     posts = current_user.followed_posts().paginate(
         page, app.config['POSTS_PER_PAGE'], False)
-    return render_template('index.html',title='Home Page', posts=posts.items, form=form)
+    # Change post=post.items because paginate() object  is not itterable like .all() this contains the list of items retrieved
+    # for the selected page but this object also has other attributes that are useful such as has_next, has_previous
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('index', page=post.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html',title='Home Page', posts=posts.items, form=form,
+                          next_url=next_url, prev_url=prev_url)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -142,7 +149,12 @@ def explore():
     Use the paginage method to retrieve only the desired page of results.
     The POST_PER_PAGE is accessed through the app.config() object
     '''
-    page = request.args('page', 1, type=int)
+    page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
-    return render_template('index.html', title='Explore', posts=posts.items)
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('index', page=posts.has_prev) \
+        if posts.has_prev else None
+    return render_template('index.html', title='Explore', posts=posts.items, 
+        next_url=next_url, prev_url=prev_url)
