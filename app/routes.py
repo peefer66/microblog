@@ -25,8 +25,15 @@ def index():
         db.session.commit()
         flash('Your post is now live')
         return redirect(url_for('index'))
-    posts=current_user.followed_posts().all()
-    return render_template('index.html',title='Home Page', posts=posts, form=form)
+    '''
+    to access to access arguments given inn the query string use Flask's request.args()
+    Use the paginage method to retrieve only the desired page of results.
+    The POST_PER_PAGE is accessed through the app.config() object
+    '''
+    page = request.args.get('page', 1,type=int)
+    posts = current_user.followed_posts().paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    return render_template('index.html',title='Home Page', posts=posts.items, form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -130,5 +137,12 @@ def unfollow(username):
 @app.route('/explore')
 @login_required
 def explore():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Explore', posts=posts)
+    '''
+    to access to access arguments given inn the query string use Flask's request.args()
+    Use the paginage method to retrieve only the desired page of results.
+    The POST_PER_PAGE is accessed through the app.config() object
+    '''
+    page = request.args('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    return render_template('index.html', title='Explore', posts=posts.items)
