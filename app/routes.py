@@ -37,7 +37,7 @@ def index():
     # for the selected page but this object also has other attributes that are useful such as has_next, has_previous
     next_url = url_for('index', page=posts.next_num) \
         if posts.has_next else None
-    prev_url = url_for('index', page=post.prev_num) \
+    prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
     return render_template('index.html',title='Home Page', posts=posts.items, form=form,
                           next_url=next_url, prev_url=prev_url)
